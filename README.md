@@ -177,7 +177,7 @@ LiftPod is available from the Digconn Systems shop:
 
 **[digconn-shop.bigcartel.com](https://digconn-shop.bigcartel.com)**
 
-Price: **£295.00** including UK delivery.
+Price: **£299.95** including UK delivery.
 
 Each unit is hand-assembled and tested by Digconn Systems Limited, Ellesmere Port, UK.
 
