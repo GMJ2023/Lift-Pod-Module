@@ -11,7 +11,7 @@ Replaces: **A082M6363F** (Lotus) / **G4886** / **GM 16525685**
 
 | Vehicle | Years | OEM Part | Status |
 |---|---|---|---|
-| Lotus Esprit | All years | A082M6363F | ✅ Confirmed tested |
+| Lotus Esprit | 1989–2004 | A082M6363F | ✅ Confirmed tested |
 | Renault Alpine A610 | 1991–1995 | GM 16525685 | 🔄 Pending confirmation |
 | Buick Reatta | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
 | Oldsmobile Toronado/Trofeo | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
