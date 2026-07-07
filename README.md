@@ -1,24 +1,33 @@
 # LiftPod — Headlight Pod Controller
+
 **Digconn Systems Limited**
 
 A modern, intelligent drop-in replacement for the obsolete Lotus Esprit headlight pod controller module.
 
-Replaces: **A082M6363F** (Lotus) / **G4886** / **GM 16525685**
+Replaces: **A082M6363F** (Lotus) / **GM 16523917** (direct GM equivalent)
 
 ---
 
 ## Compatible Vehicles
 
-| Vehicle | Years | OEM Part | Status |
-|---|---|---|---|
-| Lotus Esprit | 1989–2004 | A082M6363F | ✅ Confirmed tested |
-| Renault Alpine A610 | 1991–1995 | GM 16525685 | 🔄 Pending confirmation |
-| Buick Reatta | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
-| Oldsmobile Toronado/Trofeo | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
-| Pontiac Firebird / Trans Am | 1990–2002 | GM 16525685 | 🔄 Pending confirmation |
-| Pontiac Sunbird | 1990–1994 | GM 16525685 | 🔄 Pending confirmation |
+### GM 16523917 Family — Direct A082M6363F Equivalent
 
-> **The Lotus Esprit is the only vehicle confirmed tested and working with LiftPod.** The vehicles listed as "Pending confirmation" share GM part number GM16525685 and are expected to be compatible based on shared architecture, but have not yet been independently verified. If you own one of these vehicles please contact us before ordering at digconn@gmail.com and we will be happy to help confirm fitment.
+| Vehicle               | Years     | OEM Part                 | Status                 |
+| --------------------- | --------- | ------------------------ | ---------------------- |
+| Lotus Esprit          | 1989–2004 | A082M6363F / GM 16523917 | ✅ Confirmed tested     |
+| Chevrolet Corvette C5 | 1997–2004 | GM 16523917              | 🔄 Pending confirmation |
+| Renault Alpine A610   | 1991–1995 | GM 16523917              | 🔄 Pending confirmation |
+
+### GM 16525685 Family — Related Module, Same Architecture
+
+| Vehicle                     | Years     | OEM Part    | Status                 |
+| --------------------------- | --------- | ----------- | ---------------------- |
+| Buick Reatta                | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
+| Oldsmobile Toronado/Trofeo  | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
+| Pontiac Firebird / Trans Am | 1990–2002 | GM 16525685 | 🔄 Pending confirmation |
+| Pontiac Sunbird             | 1990–1994 | GM 16525685 | 🔄 Pending confirmation |
+
+> **The Lotus Esprit is the only vehicle confirmed tested and working with LiftPod.** All other vehicles listed are pending independent confirmation. The 16523917 family shares the exact same part number as the Lotus module. The 16525685 family uses a related but distinct GM part number with the same dual-motor architecture. If you own any of these vehicles please contact us before ordering at digconn@gmail.com and we will be happy to help confirm fitment.
 
 > **Not compatible:** Lotus Elan M100 — uses a fundamentally different control architecture (pod lowering triggered via headlight bulb filament earth path rather than a dedicated LOWER input signal). Not interchangeable.
 
@@ -34,6 +43,7 @@ The original A082M6363F and its GM equivalents are now 30–35 years old. They f
 - PCB traces burn around the switching transistors
 
 When they fail, the symptoms are:
+
 - One or both pods refusing to raise
 - Pods travelling half distance then stopping
 - One pod raising while the other lowers (winking)
@@ -48,6 +58,7 @@ When they fail, the symptoms are:
 The GM cross-reference modules (16525685, 16509097, 16521278 etc.) have the same connector pinout and the same basic function as the Lotus part. However, they were manufactured for a range of GM vehicles with varying motor wiring conventions.
 
 Fitting a module sourced from a different vehicle can result in:
+
 - Both pods working correctly ✓
 - Both pods running in reverse (both lower when you want raise)
 - One pod raising, one lowering (winking)
@@ -65,6 +76,7 @@ The Lotus Esprit headlight switch contains an internal **1kΩ resistor** between
 Under motor load, the 12V rail sags. This causes the active terminal voltage to drop from 12V into an indeterminate zone (typically 1.5–3V) — precisely the undefined region for a digital input on an AVR microcontroller.
 
 The consequences:
+
 - The MCU cannot reliably determine which command (RAISE or LOWER) is active
 - IS (current sense) baseline is captured on a sagging rail, producing artificially low values
 - Stall detection fires prematurely at approximately 400ms — half travel
@@ -82,12 +94,13 @@ Both the RAISE and LOWER input pins are read simultaneously via the AVR's ADC (P
 
 Validated readings from a real Lotus Esprit (1999 switch, cleaned contacts):
 
-| State | LOWER ADC | RAISE ADC | Margin |
-|---|---|---|---|
-| LOWER commanded | 1023 | 84–87 | 936+ counts |
-| RAISE commanded | 115–175 | 1023 | 848+ counts |
+| State           | LOWER ADC | RAISE ADC | Margin      |
+| --------------- | --------- | --------- | ----------- |
+| LOWER commanded | 1023      | 84–87     | 936+ counts |
+| RAISE commanded | 115–175   | 1023      | 848+ counts |
 
 **850+ count margin** — completely unambiguous under all real-world conditions:
+
 - 1kΩ switch resistor ✓
 - Rail sag under motor load ✓
 - Worn and corroded contacts ✓
@@ -140,6 +153,7 @@ LiftPod uses the same principle but with a more sophisticated three-phase timing
 Each motor (M1 and M2) has completely independent stall detection. If one pod mechanism is stiffer than the other, or one pod is already at its end stop, the firmware handles it cleanly — the other motor continues until it too stalls.
 
 **Confirmed real-car results (Lotus Esprit):**
+
 ```
 Travel time:        778–784ms  (well within 1200ms window)
 Stall IS values:    113–135    (healthy margin above baseline)
