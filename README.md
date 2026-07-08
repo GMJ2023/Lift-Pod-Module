@@ -127,9 +127,6 @@ LiftPod routes both motor channels identically through the PCB. A firmware defin
 ```c
 #define M2_DIR_INVERT  1   // 0=normal, 1=invert M2 direction only
 ```
-
-**This also explains why fitting an Esprit module into an Elan M100 causes winking.** The two cars have different motor wiring conventions in their looms. The original module has no way to compensate — it is hardwired for one convention. LiftPod's `M2_DIR_INVERT` define makes it configurable for any vehicle.
-
 ---
 
 ## Stall Detection — How LiftPod Knows When to Stop
