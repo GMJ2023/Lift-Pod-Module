@@ -26,8 +26,6 @@ Replaces: **A082M6363F** (Lotus) / **GM 16523917**
 
 ## Why the Elan M100 Isn't Compatible
 
-[#why-the-elan-m100-isnt-compatible](#why-the-elan-m100-isnt-compatible)
-
 The Elan M100 was investigated as a possible compatible vehicle but uses a **fundamentally different architecture** to the Esprit's system.
 
 The M100's pod lift module contains a **pulse-triggered bistable relay**. The delay module sends a brief pulse (not a sustained 12V signal) to RAISE or LOWER, and the relay inside the pod lift module latches on that pulse. This is a completely different control scheme to the sustained-signal, continuously-driven approach LiftPod is built around.
@@ -37,8 +35,6 @@ Because of this, the Elan M100 has been **removed from the compatibility list**.
 ---
 
 ## The Problem — Why Original Modules Fail
-
-[#the-problem--why-original-modules-fail](#the-problem--why-original-modules-fail)
 
 The original A082M6363F and its GM equivalents are now 30–35 years old. They fail in predictable ways:
 
@@ -60,8 +56,6 @@ When they fail, the symptoms are:
 
 ## Why GM Cross-References Work on Some Cars, Not Others
 
-[#why-gm-cross-references-work-on-some-cars-not-others](#why-gm-cross-references-work-on-some-cars-not-others)
-
 The GM cross-reference modules (16523917, 16525685 etc.) have the same connector pinout and the same basic function as the Lotus part. However, they were manufactured for a range of GM vehicles with varying motor wiring conventions.
 
 Fitting a module sourced from a different vehicle can result in:
@@ -75,8 +69,6 @@ This is not a fault with the module — it is a **motor polarity mismatch** betw
 ---
 
 ## Root Cause Analysis — The 1kΩ Switch Resistor
-
-[#root-cause-analysis--the-1kω-switch-resistor](#root-cause-analysis--the-1kω-switch-resistor)
 
 During development of LiftPod, field failures were traced to a fundamental problem with the original input circuit design.
 
@@ -96,8 +88,6 @@ This problem is **worsened by 35 years of switch wear, corroded contacts, and hi
 ---
 
 ## The Solution — ADC Differential Input
-
-[#the-solution--adc-differential-input](#the-solution--adc-differential-input)
 
 LiftPod replaces the digital input approach entirely with an **ADC differential read**.
 
@@ -125,8 +115,6 @@ A single function — `resolveCommand()` — is the sole input truth. Nothing el
 
 ## The M2_DIR_INVERT Discovery — Why Winking Happens
 
-[#the-m2_dir_invert-discovery--why-winking-happens](#the-m2_dir_invert-discovery--why-winking-happens)
-
 During real-car testing, LiftPod initially produced the classic winking symptom — one pod raising while the other lowered.
 
 Investigation revealed the root cause:
@@ -147,8 +135,6 @@ LiftPod routes both motor channels identically through the PCB. A firmware defin
 
 ## Boot Behaviour — v3.4
 
-[#boot-behaviour--v34](#boot-behaviour--v34)
-
 Field commissioning occasionally produced intermittent failures that traced back to boot timing: the AVR boots in microseconds, far faster than the loom, connector, and supply rail can physically settle. On a partially-seated connector or during PSU ramp-up on the bench, the firmware could read garbage before the signal lines stabilised, resulting in an incorrect commission.
 
 The original GM module avoided this with a ~5–6 second RC timer delay before it did anything on power-up. v3.4 replicates this in firmware with a tunable define:
@@ -165,8 +151,6 @@ If a boot move doesn't complete cleanly (weak battery, stiff mechanism, already 
 ---
 
 ## Stall Detection — How LiftPod Knows When to Stop
-
-[#stall-detection--how-liftpod-knows-when-to-stop](#stall-detection--how-liftpod-knows-when-to-stop)
 
 The original module uses current sensing to detect when a motor has reached its end stop (the pod is fully raised or lowered). When the motor stalls against the end stop, current draw spikes — and the module cuts power.
 
@@ -199,8 +183,6 @@ Board temperature:  ambient (BTN8982TA H-bridges barely warm)
 
 ## Position Memory
 
-[#position-memory](#position-memory)
-
 LiftPod remembers pod position across power cycles using EEPROM. If power is lost mid-move, the system detects this on the next power-on and recommissions cleanly from the switch state.
 
 A brownout detection circuit prevents the infinite retry loop that can occur if a motor stalls hard at its end stop — clearing the pending request and setting position to `UNKNOWN` so the system recommissions cleanly from switch state, rather than repeatedly retrying and chattering the motors.
@@ -208,8 +190,6 @@ A brownout detection circuit prevents the infinite retry loop that can occur if 
 ---
 
 ## Idle Current
-
-[#idle-current](#idle-current)
 
 ```
 Production firmware (DEBUG_MODE 0):  2.41mA
@@ -221,11 +201,11 @@ Well within the requirements for permanent connection to the vehicle battery.
 
 ## Purchase
 
-[#purchase](#purchase)
-
 LiftPod is available from the Digconn Systems shop:
 
 **[digconn-shop.bigcartel.com](https://digconn-shop.bigcartel.com)**
+
+**[pnmparts.co.uk](https://www.pnmparts.co.uk/esprit/esprit-s4-s4s-s300-gt3-93-99/esprit-s4-s4s-s300-gt3-93-99-m/lotus-headlamp-lift-module-A082M6363F)**
 
 Price: **£299.95** including UK delivery.
 
@@ -234,8 +214,6 @@ Each unit is hand-assembled and tested by Digconn Systems Limited, Ellesmere Por
 ---
 
 ## About Digconn Systems Limited
-
-[#about-digconn-systems-limited](#about-digconn-systems-limited)
 
 Digconn Systems Limited designs and hand-assembles embedded electronics products for specialist automotive and enthusiast applications.
 
