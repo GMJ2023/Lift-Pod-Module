@@ -1,4 +1,4 @@
-# LiftPod — Headlight Pod Controller
+# Lotus Esprit — Headlight Pod Controller
 
 **Digconn Systems Limited**
 
