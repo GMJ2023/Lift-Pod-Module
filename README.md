@@ -1,4 +1,4 @@
-# Lotus Esprit — Headlight Pod Controller
+# Lotus Esprit — Pod Lift Module
 
 **Digconn Systems Limited**
 
