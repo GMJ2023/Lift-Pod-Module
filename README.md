@@ -207,7 +207,7 @@ LiftPod is available from the Digconn Systems shop:
 
 **[pnmparts.co.uk](https://www.pnmparts.co.uk/esprit/esprit-s4-s4s-s300-gt3-93-99/esprit-s4-s4s-s300-gt3-93-99-m/lotus-headlamp-lift-module-A082M6363F)**
 
-Price: **£299.95**
+Price: **£325**
 
 Each unit is hand-assembled and tested by Digconn Systems Limited, Ellesmere Port, UK.
 
