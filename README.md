@@ -217,8 +217,6 @@ Each unit is hand-assembled and tested by Digconn Systems Limited, Ellesmere Por
 
 Digconn Systems Limited designs and hand-assembles embedded electronics products for specialist automotive and enthusiast applications.
 
-**Contact:** <digconn@gmail.com>
-
 ---
 
 *LiftPod is not affiliated with, endorsed by, or connected to Lotus Cars Limited, General Motors, or any other vehicle manufacturer. All part numbers referenced are for identification purposes only.*
