@@ -176,7 +176,7 @@ Each motor (M1 and M2) has completely independent stall detection. If one pod me
 Travel time:        778–784ms  (well within 1200ms window)
 Stall IS values:    113–135    (healthy margin above baseline)
 Both motors:        flags=0x03 every move
-Board temperature:  ambient (BTN8982TA H-bridges barely warm)
+Board temperature:  ambient (H-bridges barely warm)
 ```
 
 ---
