@@ -1,36 +1,35 @@
-# Lotus Esprit — Pod Lift Module
+# LiftPod — Headlight Pod Controller
 
 **Digconn Systems Limited**
 
 A modern, intelligent drop-in replacement for the obsolete Lotus Esprit headlight pod controller module.
 
-Replaces: **A082M6363F** (Lotus) / **GM 16523917**
+Replaces: **A082M6363F** (Lotus) / **GM 16523917** (direct GM equivalent)
 
 ---
 
 ## Compatible Vehicles
 
-| Vehicle                  | Years     | OEM Part / Cross-Reference | Status               |
-| ------------------------- | --------- | --------------------------- | --------------------- |
-| Lotus Esprit               | 1989–2004 | A082M6363F / GM 16523917    | ✅ Confirmed — tested and working (multiple cars, multiple years, including V8) |
-| Chevrolet Corvette C5      | 1997–2004 | GM 16523917 family          | ⏳ Pending confirmation |
-| Renault Alpine A610        | 1991–1995 | —                            | ⏳ Pending confirmation (in testing) |
-| Buick Reatta               | 1990–1992 | GM 16525685 family          | ⏳ Pending confirmation |
-| Oldsmobile Toronado        | 1990–1992 | GM 16525685 family          | ⏳ Pending confirmation |
-| Pontiac Firebird           | 1990–2002 | GM 16525685 family          | ⏳ Pending confirmation |
-| Pontiac Sunbird            | 1990–1994 | GM 16525685 family          | ⏳ Pending confirmation |
+### GM 16523917 Family — Direct A082M6363F Equivalent
 
-> **Not compatible:** Lotus Elan M100 (1989–1995). Investigated and ruled out — see below.
+| Vehicle               | Years     | OEM Part                 | Status                 |
+| --------------------- | --------- | ------------------------ | ---------------------- |
+| Lotus Esprit          | 1989–2004 | A082M6363F / GM 16523917 | ✅ Confirmed tested     |
+| Chevrolet Corvette C5 | 1997–2004 | GM 16523917              | 🔄 Pending confirmation |
+| Renault Alpine A610   | 1991–1995 | GM 16523917              | 🔄 Pending confirmation |
 
----
+### GM 16525685 Family — Related Module, Same Architecture
 
-## Why the Elan M100 Isn't Compatible
+| Vehicle                     | Years     | OEM Part    | Status                 |
+| --------------------------- | --------- | ----------- | ---------------------- |
+| Buick Reatta                | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
+| Oldsmobile Toronado/Trofeo  | 1990–1992 | GM 16525685 | 🔄 Pending confirmation |
+| Pontiac Firebird / Trans Am | 1990–2002 | GM 16525685 | 🔄 Pending confirmation |
+| Pontiac Sunbird             | 1990–1994 | GM 16525685 | 🔄 Pending confirmation |
 
-The Elan M100 was investigated as a possible compatible vehicle but uses a **fundamentally different architecture** to the Esprit's system.
+> **The Lotus Esprit is the only vehicle confirmed tested and working with LiftPod.** All other vehicles listed are pending independent confirmation. The 16523917 family shares the exact same part number as the Lotus module. The 16525685 family uses a related but distinct GM part number with the same dual-motor architecture. If you own any of these vehicles please contact us before ordering at digconn@gmail.com and we will be happy to help confirm fitment.
 
-The M100's pod lift module contains a **pulse-triggered bistable relay**. The delay module sends a brief pulse (not a sustained 12V signal) to RAISE or LOWER, and the relay inside the pod lift module latches on that pulse. This is a completely different control scheme to the sustained-signal, continuously-driven approach LiftPod is built around.
-
-Because of this, the Elan M100 has been **removed from the compatibility list**. A dedicated **LiftPod M100 Edition**, built around interrupt-driven pulse detection, remains a possibility as a separate R&D project in future — but is not part of the current product.
+> **Not compatible:** Lotus Elan M100 — uses a fundamentally different control architecture (pod lowering triggered via headlight bulb filament earth path rather than a dedicated LOWER input signal). Not interchangeable.
 
 ---
 
@@ -56,7 +55,7 @@ When they fail, the symptoms are:
 
 ## Why GM Cross-References Work on Some Cars, Not Others
 
-The GM cross-reference modules (16523917, 16525685 etc.) have the same connector pinout and the same basic function as the Lotus part. However, they were manufactured for a range of GM vehicles with varying motor wiring conventions.
+The GM cross-reference modules (16525685, 16509097, 16521278 etc.) have the same connector pinout and the same basic function as the Lotus part. However, they were manufactured for a range of GM vehicles with varying motor wiring conventions.
 
 Fitting a module sourced from a different vehicle can result in:
 
@@ -119,34 +118,20 @@ During real-car testing, LiftPod initially produced the classic winking symptom 
 
 Investigation revealed the root cause:
 
-The two headlight pod mechanisms are **physical mirror images** of each other. To raise both pods simultaneously, the left motor must rotate clockwise and the right motor must rotate anti-clockwise (or vice versa).
-
-The original Lotus factory wiring compensates for this by swapping the motor wire polarity on one side within the car's loom. The module itself treats both motors identically — the loom asymmetry does the work.
-
-LiftPod routes both motor channels identically through the PCB. A firmware define — `M2_DIR_INVERT` — inverts the direction of M2 relative to M1, compensating for the physical mirror asymmetry in software rather than relying on loom wiring.
+The two headlight pod mechanisms are **physical mirror images** of each other. The vehicle loom wires the two motors in opposing polarity to compensate — confirmed by the Alpine A610 wiring diagram and consistent with the Lotus Esprit:
 
 ```
+Left motor:  A=+12V  B=-12V   ← forward = raises pod
+Right motor: A=-12V  B=+12V   ← reversed = also raises pod
+```
+
+LiftPod routes both motor channels identically through the PCB. A firmware define — `M2_DIR_INVERT` — inverts the direction of M2 relative to M1, compensating for this loom polarity difference in software.
+
+```c
 #define M2_DIR_INVERT  1   // 0=normal, 1=invert M2 direction only
 ```
 
-**On the Esprit, `M2_DIR_INVERT = 1` is required** due to the factory loom asymmetry between the left and right pod mechanisms — confirmed across multiple cars.
-
----
-
-## Boot Behaviour — v3.4
-
-Field commissioning occasionally produced intermittent failures that traced back to boot timing: the AVR boots in microseconds, far faster than the loom, connector, and supply rail can physically settle. On a partially-seated connector or during PSU ramp-up on the bench, the firmware could read garbage before the signal lines stabilised, resulting in an incorrect commission.
-
-The original GM module avoided this with a ~5–6 second RC timer delay before it did anything on power-up. v3.4 replicates this in firmware with a tunable define:
-
-```
-#define BOOT_SETTLE_MS  3000UL   // tunable — 3s default, snappier than the
-                                  // original GM module's 5-6s RC timer
-```
-
-On every power-on, after the settle delay, LiftPod now **always moves both pods to match the switch position** — unconditionally, regardless of EEPROM history. This mirrors the original GM module's boot behaviour and guarantees a known, correct state every time, eliminating the random commissioning failures seen in earlier firmware.
-
-If a boot move doesn't complete cleanly (weak battery, stiff mechanism, already at end stop), the firmware trusts the switch/target position rather than falling back to an `UNKNOWN` state — an `UNKNOWN` state locks out all subsequent moves, which is a worse failure mode than trusting the best available truth. Periodic reconciliation corrects the position if it's ever genuinely wrong.
+This ensures both pods always move together regardless of individual motor connection orientation.
 
 ---
 
@@ -176,7 +161,7 @@ Each motor (M1 and M2) has completely independent stall detection. If one pod me
 Travel time:        778–784ms  (well within 1200ms window)
 Stall IS values:    113–135    (healthy margin above baseline)
 Both motors:        flags=0x03 every move
-Board temperature:  ambient (H-bridges barely warm)
+Board temperature:  ambient (BTN8982TA H-bridges barely warm)
 ```
 
 ---
@@ -185,7 +170,7 @@ Board temperature:  ambient (H-bridges barely warm)
 
 LiftPod remembers pod position across power cycles using EEPROM. If power is lost mid-move, the system detects this on the next power-on and recommissions cleanly from the switch state.
 
-A brownout detection circuit prevents the infinite retry loop that can occur if a motor stalls hard at its end stop — clearing the pending request and setting position to `UNKNOWN` so the system recommissions cleanly from switch state, rather than repeatedly retrying and chattering the motors.
+A brownout detection circuit prevents the infinite retry loop that can occur if a motor stalls hard at its end stop — clearing the pending request and allowing the supply voltage to recover before retrying.
 
 ---
 
@@ -207,7 +192,7 @@ LiftPod is available from the Digconn Systems shop:
 
 **[pnmparts.co.uk](https://www.pnmparts.co.uk/esprit/esprit-s4-s4s-s300-gt3-93-99/esprit-s4-s4s-s300-gt3-93-99-m/lotus-headlamp-lift-module-A082M6363F)**
 
-Price: **£325**
+Price: **£325.00** including UK delivery.
 
 Each unit is hand-assembled and tested by Digconn Systems Limited, Ellesmere Port, UK.
 
@@ -217,6 +202,9 @@ Each unit is hand-assembled and tested by Digconn Systems Limited, Ellesmere Por
 
 Digconn Systems Limited designs and hand-assembles embedded electronics products for specialist automotive and enthusiast applications.
 
+**Contact:** digconn@gmail.com
+
 ---
 
 *LiftPod is not affiliated with, endorsed by, or connected to Lotus Cars Limited, General Motors, or any other vehicle manufacturer. All part numbers referenced are for identification purposes only.*
+
